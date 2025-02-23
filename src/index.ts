@@ -38,9 +38,8 @@ export function filterPersons<T extends Person>(
   return persons
     .filter((person): person is T => person.type === personType) // Type Guard
     .filter((person) =>
-      Object.keys(criteria).every(
-        (fieldName) =>
-          person[fieldName as keyof T] === criteria[fieldName as keyof T]
+      (Object.keys(criteria) as (keyof Criteria<T>)[]).every(
+        (fieldName) => person[fieldName as keyof T] === criteria[fieldName]
       )
     );
 }
