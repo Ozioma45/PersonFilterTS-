@@ -29,3 +29,25 @@ export const persons: Person[] = [
 ];
 
 type Criteria<T> = Partial<Omit<T, "type">>;
+
+export function filterPersons<T extends Person>(
+  persons: Person[],
+  personType: T["type"],
+  criteria: Criteria<T>
+): T[] {
+  return persons
+    .filter((person): person is T => person.type === personType) // Type Guard
+    .filter((person) =>
+      Object.keys(criteria).every(
+        (fieldName) =>
+          person[fieldName as keyof T] === criteria[fieldName as keyof T]
+      )
+    );
+}
+
+// Usage examples
+const usersByAge25 = filterPersons(persons, "user", { age: 25 });
+console.log("Users of age 25:", usersByAge25);
+
+const adminsByAge18 = filterPersons(persons, "admin", { age: 18 });
+console.log("Admins of age 18:", adminsByAge18);
